@@ -1,493 +1,304 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>貪食蛇遊戲</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', 'Microsoft JhengHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .game-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 900px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .score-board {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px 30px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .score {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .high-score {
-            font-size: 1.2em;
-            color: #764ba2;
-        }
-
-        #gameCanvas {
-            border: 3px solid #333;
-            border-radius: 10px;
-            background: #1a1a2e;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: block;
-            margin: 0 auto;
-        }
-
-        .controls {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .controls h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .controls p {
-            color: #666;
-            margin: 5px 0;
-            font-size: 0.9em;
-        }
-
-        .game-status {
-            margin: 20px 0;
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #764ba2;
-            min-height: 30px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .game-over {
-            color: #e74c3c !important;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Number Guessing Game (4-Digit)</title>
+        <style>
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                background-color: #f4f4f4;
             }
-            50% {
-                opacity: 0.7;
-            }
-        }
 
-        @media (max-width: 768px) {
+            .container {
+                background-color: #fff;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                max-width: 450px;
+                width: 95%;
+                margin: 20px;
+            }
+
             h1 {
-                font-size: 2em;
+                color: #333;
+                margin-bottom: 10px;
             }
 
-            .score-board {
-                flex-direction: column;
-                gap: 10px;
+            p {
+                color: #666;
+                line-height: 1.5;
             }
 
-            #gameCanvas {
-                width: 100%;
-                height: auto;
+            input[type="text"] {
+                padding: 12px;
+                margin: 20px 0;
+                border: 2px solid #ddd;
+                border-radius: 4px;
+                width: 140px;
+                font-size: 24px;
+                text-align: center;
+                letter-spacing: 5px;
             }
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <h1>🐍 貪食蛇遊戲</h1>
-        
-        <div class="score-board">
-            <div class="score">分數: <span id="score">0</span></div>
-            <div class="high-score">最高分: <span id="highScore">0</span></div>
+
+            input[type="text"]:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+            button {
+                background-color: #007bff;
+                color: white;
+                padding: 10px 25px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.2s;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+            button:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+
+            #message {
+                margin-top: 20px;
+                font-size: 1.2em;
+                font-weight: bold;
+                color: #333;
+                min-height: 1.5em;
+            }
+
+            .stats {
+                margin-top: 15px;
+                font-size: 0.9em;
+                color: #888;
+                font-weight: bold;
+            }
+
+            #resetButton {
+                background-color: #28a745;
+                margin-top: 15px;
+            }
+
+            #resetButton:hover {
+                background-color: #218838;
+            }
+
+            /* History Styling */
+            .history-container {
+                margin-top: 25px;
+                border-top: 1px solid #eee;
+                padding-top: 20px;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .history-header {
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #555;
+                display: flex;
+                justify-content: space-between;
+                padding: 0 40px;
+            }
+
+            .history-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .history-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 40px;
+                border-bottom: 1px solid #f9f9f9;
+                font-family: monospace;
+                font-size: 1.1em;
+            }
+
+            .history-item:nth-child(even) {
+                background-color: #fafafa;
+            }
+
+            .result-a {
+                color: #28a745;
+                font-weight: bold;
+            }
+            .result-b {
+                color: #ffc107;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Guess My Number!</h1>
+            <p>
+                I'm thinking of a 4-digit number.<br />(Digits 0-9, no repeats)
+            </p>
+
+            <input
+                type="text"
+                id="guessInput"
+                maxlength="4"
+                placeholder="0000"
+                inputmode="numeric"
+                autocomplete="off"
+            />
+            <br />
+            <button id="submitGuess">Guess</button>
+
+            <p id="message"></p>
+
+            <div class="stats">Attempts: <span id="attempts">0</span></div>
+
+            <button id="resetButton" style="display: none">Play Again</button>
+
+            <div
+                class="history-container"
+                id="historySection"
+                style="display: none"
+            >
+                <div class="history-header">
+                    <span>Guess</span>
+                    <span>Result</span>
+                </div>
+                <div id="historyList" class="history-list"></div>
+            </div>
         </div>
 
-        <div class="game-status" id="gameStatus">按空白鍵或點擊「開始遊戲」按鈕開始</div>
+        <script>
+            let secretNumber;
+            let attempts;
 
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+            const guessInput = document.getElementById("guessInput");
+            const submitGuessButton = document.getElementById("submitGuess");
+            const messageDisplay = document.getElementById("message");
+            const attemptsDisplay = document.getElementById("attempts");
+            const resetButton = document.getElementById("resetButton");
+            const historySection = document.getElementById("historySection");
+            const historyList = document.getElementById("historyList");
 
-        <div style="margin-top: 20px;">
-            <button class="btn" id="startBtn">開始遊戲</button>
-            <button class="btn" id="pauseBtn" style="display: none;">暫停</button>
-            <button class="btn" id="restartBtn" style="display: none;">重新開始</button>
-        </div>
+            function generateSecretNumber() {
+                const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                let number = "";
+                for (let i = 0; i < 4; i++) {
+                    const randomIndex = Math.floor(
+                        Math.random() * digits.length,
+                    );
+                    number += digits[randomIndex];
+                    digits.splice(randomIndex, 1);
+                }
+                return number;
+            }
 
-        <div class="controls">
-            <h3>🎮 遊戲說明</h3>
-            <p>使用方向鍵（↑ ↓ ← →）控制蛇的移動方向</p>
-            <p>吃到紅色食物可以增加分數和長度</p>
-            <p>撞到牆壁或自己的身體會結束遊戲</p>
-            <p>空格鍵：開始/暫停遊戲</p>
-        </div>
-    </div>
+            function initializeGame() {
+                secretNumber = generateSecretNumber();
+                attempts = 0;
+                messageDisplay.textContent = "";
+                attemptsDisplay.textContent = attempts;
+                guessInput.value = "";
+                guessInput.disabled = false;
+                submitGuessButton.disabled = false;
+                resetButton.style.display = "none";
 
-    <script>
-        // Canvas 設定
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
+                // Clear History
+                historyList.innerHTML = "";
+                historySection.style.display = "none";
 
-        // 遊戲狀態
-        let gameRunning = false;
-        let gamePaused = false;
-        let score = 0;
-        let highScore = localStorage.getItem('snakeHighScore') || 0;
-        document.getElementById('highScore').textContent = highScore;
+                console.log("Cheat Sheet (Secret):", secretNumber);
+                guessInput.focus();
+            }
 
-        // 蛇的初始狀態
-        let snake = [
-            { x: 10, y: 10 }
-        ];
-        let velocity = { x: 0, y: 0 };
-        let nextVelocity = { x: 0, y: 0 };
+            function addHistoryEntry(guess, a, b) {
+                historySection.style.display = "block";
+                const item = document.createElement("div");
+                item.className = "history-item";
 
-        // 食物
-        let food = { x: 15, y: 15 };
+                const guessSpan = document.createElement("span");
+                guessSpan.textContent = guess;
 
-        // 遊戲速度
-        let gameSpeed = 150;
-        let gameLoop;
+                const resultSpan = document.createElement("span");
+                resultSpan.innerHTML = `<span class="result-a">${a}A</span><span class="result-b">${b}B</span>`;
 
-        // 按鈕元素
-        const startBtn = document.getElementById('startBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        const gameStatus = document.getElementById('gameStatus');
-        const scoreElement = document.getElementById('score');
+                item.appendChild(guessSpan);
+                item.appendChild(resultSpan);
 
-        // 生成隨機食物位置
-        function generateFood() {
-            food.x = Math.floor(Math.random() * tileCount);
-            food.y = Math.floor(Math.random() * tileCount);
-            
-            // 確保食物不生成在蛇身上
-            for (let segment of snake) {
-                if (segment.x === food.x && segment.y === food.y) {
-                    generateFood();
+                // Prepend so the latest guess is at the top
+                historyList.insertBefore(item, historyList.firstChild);
+            }
+
+            function checkGuess() {
+                const userGuess = guessInput.value;
+
+                if (!/^\d{4}$/.test(userGuess)) {
+                    messageDisplay.textContent =
+                        "Please enter exactly 4 digits.";
                     return;
                 }
-            }
-        }
 
-        // 繪製網格背景
-        function drawGrid() {
-            ctx.strokeStyle = '#16213e';
-            ctx.lineWidth = 1;
-            
-            for (let i = 0; i <= tileCount; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * gridSize, 0);
-                ctx.lineTo(i * gridSize, canvas.height);
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.moveTo(0, i * gridSize);
-                ctx.lineTo(canvas.width, i * gridSize);
-                ctx.stroke();
-            }
-        }
-
-        // 繪製蛇
-        function drawSnake() {
-            snake.forEach((segment, index) => {
-                if (index === 0) {
-                    // 蛇頭
-                    ctx.fillStyle = '#4CAF50';
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = '#4CAF50';
-                } else {
-                    // 蛇身
-                    ctx.fillStyle = '#66BB6A';
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = '#66BB6A';
+                const guessDigits = userGuess.split("");
+                if (new Set(guessDigits).size !== 4) {
+                    messageDisplay.textContent = "Digits must not repeat.";
+                    return;
                 }
-                
-                ctx.fillRect(
-                    segment.x * gridSize + 1,
-                    segment.y * gridSize + 1,
-                    gridSize - 2,
-                    gridSize - 2
-                );
-                
-                // 蛇頭眼睛
-                if (index === 0) {
-                    ctx.fillStyle = 'white';
-                    ctx.shadowBlur = 0;
-                    const eyeSize = 3;
-                    const eyeOffset = 5;
-                    
-                    if (velocity.x === 1) {
-                        // 向右
-                        ctx.fillRect(segment.x * gridSize + eyeOffset + 5, segment.y * gridSize + eyeOffset, eyeSize, eyeSize);
-                        ctx.fillRect(segment.x * gridSize + eyeOffset + 5, segment.y * gridSize + eyeOffset + 8, eyeSize, eyeSize);
-                    } else if (velocity.x === -1) {
-                        // 向左
-                        ctx.fillRect(segment.x * gridSize + eyeOffset, segment.y * gridSize + eyeOffset, eyeSize, eyeSize);
-                        ctx.fillRect(segment.x * gridSize + eyeOffset, segment.y * gridSize + eyeOffset + 8, eyeSize, eyeSize);
-                    } else if (velocity.y === -1) {
-                        // 向上
-                        ctx.fillRect(segment.x * gridSize + eyeOffset, segment.y * gridSize + eyeOffset, eyeSize, eyeSize);
-                        ctx.fillRect(segment.x * gridSize + eyeOffset + 8, segment.y * gridSize + eyeOffset, eyeSize, eyeSize);
-                    } else if (velocity.y === 1) {
-                        // 向下
-                        ctx.fillRect(segment.x * gridSize + eyeOffset, segment.y * gridSize + eyeOffset + 5, eyeSize, eyeSize);
-                        ctx.fillRect(segment.x * gridSize + eyeOffset + 8, segment.y * gridSize + eyeOffset + 5, eyeSize, eyeSize);
+
+                attempts++;
+                attemptsDisplay.textContent = attempts;
+
+                let a = 0; // Correct digit, correct position
+                let b = 0; // Correct digit, wrong position
+
+                const secretArr = secretNumber.split("");
+                const guessArr = userGuess.split("");
+
+                for (let i = 0; i < 4; i++) {
+                    if (guessArr[i] === secretArr[i]) {
+                        a++;
+                    } else if (secretNumber.includes(guessArr[i])) {
+                        b++;
                     }
                 }
-            });
-            ctx.shadowBlur = 0;
-        }
 
-        // 繪製食物
-        function drawFood() {
-            ctx.fillStyle = '#e74c3c';
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#e74c3c';
-            ctx.beginPath();
-            ctx.arc(
-                food.x * gridSize + gridSize / 2,
-                food.y * gridSize + gridSize / 2,
-                gridSize / 2 - 2,
-                0,
-                2 * Math.PI
-            );
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        }
+                addHistoryEntry(userGuess, a, b);
 
-        // 移動蛇
-        function moveSnake() {
-            // 更新速度（防止反向移動）
-            velocity = { ...nextVelocity };
-
-            const head = { x: snake[0].x + velocity.x, y: snake[0].y + velocity.y };
-
-            // 檢查牆壁碰撞
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-                gameOver();
-                return;
-            }
-
-            // 檢查自身碰撞
-            for (let segment of snake) {
-                if (head.x === segment.x && head.y === segment.y) {
-                    gameOver();
-                    return;
-                }
-            }
-
-            snake.unshift(head);
-
-            // 檢查是否吃到食物
-            if (head.x === food.x && head.y === food.y) {
-                score += 10;
-                scoreElement.textContent = score;
-                generateFood();
-                
-                // 更新最高分
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('snakeHighScore', highScore);
-                    document.getElementById('highScore').textContent = highScore;
-                }
-                
-                // 隨分數增加速度（可選）
-                if (score % 50 === 0 && gameSpeed > 80) {
-                    gameSpeed -= 5;
-                    clearInterval(gameLoop);
-                    startGameLoop();
-                }
-            } else {
-                snake.pop();
-            }
-        }
-
-        // 繪製遊戲
-        function draw() {
-            // 清空畫布
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // 繪製網格
-            drawGrid();
-
-            // 繪製食物
-            drawFood();
-
-            // 繪製蛇
-            drawSnake();
-        }
-
-        // 遊戲主循環
-        function gameUpdate() {
-            if (!gamePaused && gameRunning) {
-                moveSnake();
-                draw();
-            }
-        }
-
-        // 開始遊戲循環
-        function startGameLoop() {
-            gameLoop = setInterval(gameUpdate, gameSpeed);
-        }
-
-        // 開始遊戲
-        function startGame() {
-            if (!gameRunning) {
-                // 重置遊戲狀態
-                snake = [{ x: 10, y: 10 }];
-                // 給蛇一個初始方向（向右）
-                velocity = { x: 1, y: 0 };
-                nextVelocity = { x: 1, y: 0 };
-                score = 0;
-                scoreElement.textContent = score;
-                gameSpeed = 150;
-                gameRunning = true;
-                gamePaused = false;
-                
-                generateFood();
-                draw();
-                
-                startBtn.style.display = 'none';
-                pauseBtn.style.display = 'inline-block';
-                restartBtn.style.display = 'none';
-                gameStatus.textContent = '遊戲進行中...使用方向鍵控制';
-                gameStatus.classList.remove('game-over');
-                
-                startGameLoop();
-            } else {
-                // 暫停/繼續
-                togglePause();
-            }
-        }
-
-        // 暫停/繼續
-        function togglePause() {
-            if (!gameRunning) return;
-            
-            gamePaused = !gamePaused;
-            if (gamePaused) {
-                pauseBtn.textContent = '繼續';
-                gameStatus.textContent = '遊戲已暫停';
-            } else {
-                pauseBtn.textContent = '暫停';
-                gameStatus.textContent = '遊戲進行中...';
-            }
-        }
-
-        // 遊戲結束
-        function gameOver() {
-            gameRunning = false;
-            clearInterval(gameLoop);
-            
-            startBtn.style.display = 'none';
-            pauseBtn.style.display = 'none';
-            restartBtn.style.display = 'inline-block';
-            gameStatus.textContent = `遊戲結束！最終分數：${score}`;
-            gameStatus.classList.add('game-over');
-        }
-
-        // 重新開始
-        function restartGame() {
-            clearInterval(gameLoop);
-            gameRunning = false;
-            gamePaused = false;
-            startGame();
-        }
-
-        // 鍵盤控制
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                if (!gameRunning) {
-                    startGame();
+                if (a === 4) {
+                    messageDisplay.textContent = `4A0B! You won in ${attempts} tries!`;
+                    messageDisplay.style.color = "#28a745";
+                    guessInput.disabled = true;
+                    submitGuessButton.disabled = true;
+                    resetButton.style.display = "inline-block";
                 } else {
-                    togglePause();
+                    messageDisplay.textContent = `${a}A${b}B`;
+                    messageDisplay.style.color = "#333";
+                    guessInput.value = "";
+                    guessInput.focus();
                 }
-                return;
             }
 
-            // 防止方向鍵導致頁面滾動
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
-                e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                e.preventDefault();
-            }
+            submitGuessButton.addEventListener("click", checkGuess);
 
-            if (!gameRunning || gamePaused) return;
+            guessInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") checkGuess();
+            });
 
-            // 防止反向移動
-            if (e.key === 'ArrowUp' && velocity.y === 0) {
-                nextVelocity = { x: 0, y: -1 };
-            } else if (e.key === 'ArrowDown' && velocity.y === 0) {
-                nextVelocity = { x: 0, y: 1 };
-            } else if (e.key === 'ArrowLeft' && velocity.x === 0) {
-                nextVelocity = { x: -1, y: 0 };
-            } else if (e.key === 'ArrowRight' && velocity.x === 0) {
-                nextVelocity = { x: 1, y: 0 };
-            }
-        });
+            resetButton.addEventListener("click", initializeGame);
 
-        // 按鈕事件
-        startBtn.addEventListener('click', startGame);
-        pauseBtn.addEventListener('click', togglePause);
-        restartBtn.addEventListener('click', restartGame);
-
-        // 初始化繪製
-        draw();
-    </script>
-</body>
+            initializeGame();
+        </script>
+    </body>
 </html>
+
